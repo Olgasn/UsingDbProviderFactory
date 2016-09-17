@@ -12,7 +12,7 @@ namespace UsingDbProviderFactory
         static void Main(string[] args)
         {
             // Set |DataDirectory| value
-            string pathDB = AppDomain.CurrentDomain.BaseDirectory;
+            string pathDB = @"C:\USERS\OLAS\DOCUMENTS\VISUAL STUDIO 2015\PROJECTS\USINGDBPROVIDERFACTORY\APP_DATA\";
             AppDomain.CurrentDomain.SetData("DataDirectory", pathDB);
             string dpath = ConfigurationManager.AppSettings["DataDirectory"];
             GetProviderFactoryClasses();
@@ -40,8 +40,8 @@ namespace UsingDbProviderFactory
             }
             return table;
         }
-        // Retrieve a connection string by specifying the providerName.
-        // Assumes one connection string per provider in the config file.
+        // Получение строки соединения по имени providerName. 
+        // Предполагается, что в конфигурационном файле существует одно соединение для каждого поставщика.
         static string GetConnectionStringByProvider(string providerName)
         {
             // Return null on failure.
