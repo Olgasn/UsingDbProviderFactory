@@ -1,7 +1,7 @@
 # UsingDbProviderFactory
 Содержит набор примеров по работе с независимыми от поставщика объектами ADO .NET: 
 
-Получение DbProviderFactory- показывает способ создания списка установленных поставщиков данных и соединения DbConnection в фабрике DbProviderFactory. 
+Работа с DbProviderFactory- показывает способ создания списка установленных поставщиков данных и соединения DbConnection в фабрике DbProviderFactory. 
 
 Работа с DbConnection, DbCommand и DbException - показывает способ создания объектов DbCommand и DbDataReader, а также методы обработки ошибок с помощью исключения DbException. 
 
