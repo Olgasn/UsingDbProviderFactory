@@ -74,7 +74,7 @@ namespace UsingDbProviderFactory
             {
                 foreach (DataColumn column in table.Columns)
                 {
-                    Console.Write(i);
+                    Console.Write(i.ToString()+". ");
                     Console.WriteLine(row[column]);
                     Console.WriteLine();
                     i += 1;
@@ -115,7 +115,7 @@ namespace UsingDbProviderFactory
             // Assume failure.
             DbConnection connection = null;
 
-            // Create the DbProviderFactory and DbConnection.
+            // Создание объектов DbProviderFactory и DbConnection.
             if (connectionString != null)
             {
                 try
@@ -140,17 +140,17 @@ namespace UsingDbProviderFactory
             return connection;
         }
 
-        //Пример извлечения данных
-        //В качестве аргумента указывается объект DbConnection.
-        //Объект DbCommand создается для выбора данных из таблицы Categories путем задания CommandText инструкции SQL SELECT. 
-        //Предполагается, что в источнике данных существует таблица Categories.
-        //Открывается соединение, и данные получаются при помощи объекта DbDataReader.
+        // Пример извлечения данных
+        // В качестве аргумента указывается объект DbConnection.
+        // Объект DbCommand создается для выбора данных из таблицы Categories путем задания CommandText инструкции SQL SELECT. 
+        // Предполагается, что в источнике данных существует таблица Categories.
+        // Открывается соединение, и данные получаются при помощи объекта DbDataReader.
         static void DbCommandSelect(DbConnection connection)
         {
             string queryString =
                 "SELECT CategoryID, CategoryName FROM Categories";
 
-            // Check for valid DbConnection.
+            // Проверка объекта DbConnection.
             if (connection != null)
             {
                 using (connection)
@@ -189,16 +189,16 @@ namespace UsingDbProviderFactory
 
         }
         // Пример выполнения команды
-        //В этом примере в качестве аргумента указывается объект DbConnection.
-        //Если объект DbConnection является допустимым, то открывается соединение, 
-        //создается и выполняется команда DbCommand.CommandText задается инструкции SQL INSERT, 
-        //которая выполняет вставку в таблицу Categories в базе данных Northwind.
-        //Предполагается, что база данных Northwind существует в источнике данных, 
-        //а также что используемый в инструкции INSERT синтаксис SQL является допустимым для указанного поставщика. 
-        //Ошибки в источнике данных обрабатываются блоком кода DbException, а все остальные исключения - в блоке Exception.
+        // В качестве аргумента указывается объект DbConnection.
+        // Если объект DbConnection является допустимым, то открывается соединение, 
+        // создается и выполняется команда DbCommand.CommandText задается инструкции SQL INSERT, 
+        // которая выполняет вставку в таблицу Categories в базе данных Northwind.
+        // Предполагается, что база данных Northwind существует в источнике данных, 
+        // а также что используемый в инструкции INSERT синтаксис SQL является допустимым для указанного поставщика. 
+        // Ошибки в источнике данных обрабатываются блоком кода DbException, а все остальные исключения - в блоке Exception.
         static void ExecuteDbCommand(DbConnection connection)
         {
-            // Проверка на существование DbConnection объекта.
+            // Проверка на существование объекта DbConnection.
             if (connection != null)
             {
                 using (connection)
@@ -208,7 +208,7 @@ namespace UsingDbProviderFactory
                         // Открыть соединение.
                         connection.Open();
 
-                        // Созать и выполнить DbCommand.
+                        // Создать и выполнить DbCommand.
                         DbCommand command = connection.CreateCommand();
                         command.CommandText =
                             "INSERT INTO Categories (CategoryName) VALUES ('Low Carb')";
@@ -237,12 +237,12 @@ namespace UsingDbProviderFactory
                 Console.WriteLine("Ошибка: DbConnection is null.");
             }
         }
-        //Получение данных с помощью объекта DbDataAdapter
-        //В этом примере демонстрируется создание строго типизированного объекта DbDataAdapter на основе имени поставщика и строки соединения.
-        //В коде используется метод CreateConnection объекта DbProviderFactory для создания DbConnection.
-        //После этого в коде с помощью метода CreateCommand путем указания его свойств CommandText и Connection создается команда DbCommand для выборки данных.
-        //Наконец, в коде с помощью метода CreateDataAdapter создается объект DbDataAdapter и устанавливается его свойство SelectCommand. 
-        //Метод Fill объекта DbDataAdapter загружает эти данные в DataTable.
+        // Получение данных с помощью объекта DbDataAdapter
+        // Демонстрируется создание строго типизированного объекта DbDataAdapter на основе имени поставщика и строки соединения.
+        // В коде используется метод CreateConnection объекта DbProviderFactory для создания DbConnection.
+        // После этого в коде с помощью метода CreateCommand путем указания его свойств CommandText и Connection создается команда DbCommand для выборки данных.
+        // Наконец, в коде с помощью метода CreateDataAdapter создается объект DbDataAdapter и устанавливается его свойство SelectCommand. 
+        // Метод Fill объекта DbDataAdapter загружает эти данные в DataTable.
         static void CreateDataAdapter(string providerName, string connectionString)
         {
             try
@@ -289,7 +289,7 @@ namespace UsingDbProviderFactory
             }
         }
         // Изменение данных с помощью DbDataAdapter
-        // В этом примере демонстрируется модификация данных в DataTable с использованием DbDataAdapter, 
+        // Демонстрируется модификация данных в DataTable с использованием DbDataAdapter, 
         // в котором применяется объект DbCommandBuilder для формирования команд, необходимых для обновления данных в источнике данных.
         // Значение SelectCommand свойства DbDataAdapter устанавливается для получения значений CustomerID и CompanyName из таблицы Customers.
         // Метод GetInsertCommand используется для задания свойства InsertCommand, 
@@ -303,7 +303,7 @@ namespace UsingDbProviderFactory
         {
             try
             {
-                // Create the DbProviderFactory and DbConnection.
+                // Создать объеты DbProviderFactory и DbConnection.
                 DbProviderFactory factory =
                     DbProviderFactories.GetFactory(providerName);
 
@@ -312,29 +312,29 @@ namespace UsingDbProviderFactory
 
                 using (connection)
                 {
-                    // Define the query.
+                    // Задать строку запроса.
                     string queryString =
                         "SELECT CustomerID, CompanyName FROM Customers";
 
-                    // Create the select command.
+                    // Создать команду на выборку.
                     DbCommand command = factory.CreateCommand();
                     command.CommandText = queryString;
                     command.Connection = connection;
 
-                    // Create the DbDataAdapter.
+                    // Создать объект DbDataAdapter.
                     DbDataAdapter adapter = factory.CreateDataAdapter();
                     adapter.SelectCommand = command;
 
-                    // Create the DbCommandBuilder.
+                    // Создать объект DbCommandBuilder.
                     DbCommandBuilder builder = factory.CreateCommandBuilder();
                     builder.DataAdapter = adapter;
 
-                    // Get the insert, update and delete commands.
+                    // Получить insert, update and delete команды.
                     adapter.InsertCommand = builder.GetInsertCommand();
                     adapter.UpdateCommand = builder.GetUpdateCommand();
                     adapter.DeleteCommand = builder.GetDeleteCommand();
 
-                    // Display the CommandText for each command.
+                    // Отобразить содержимое для каждой команды.
                     Console.WriteLine("InsertCommand: {0}",
                         adapter.InsertCommand.CommandText);
                     Console.WriteLine("UpdateCommand: {0}",
@@ -342,11 +342,11 @@ namespace UsingDbProviderFactory
                     Console.WriteLine("DeleteCommand: {0}",
                         adapter.DeleteCommand.CommandText);
 
-                    // Fill the DataTable.
+                    // Запонить данными объект DataTable.
                     DataTable table = new DataTable();
                     adapter.Fill(table);
 
-                    // Insert a new row.
+                    // Вставить новую строку.
                     DataRow newRow = table.NewRow();
                     newRow["CustomerID"] = "XYZZZ";
                     newRow["CompanyName"] = "XYZ Company";
@@ -354,30 +354,30 @@ namespace UsingDbProviderFactory
 
                     adapter.Update(table);
 
-                    // Display rows after insert.
+                    // Отобразить строки после вставки.
                     Console.WriteLine();
-                    Console.WriteLine("----List All Rows-----");
+                    Console.WriteLine("----Список всех строк-----");
                     foreach (DataRow row in table.Rows)
                     {
                         Console.WriteLine("{0} {1}", row[0], row[1]);
                     }
-                    Console.WriteLine("----After Insert-----");
+                    Console.WriteLine("----После вставки-----");
 
-                    // Edit an existing row.
+                    // Редактировать существующую строку.
                     DataRow[] editRow = table.Select("CustomerID = 'XYZZZ'");
                     editRow[0]["CompanyName"] = "XYZ Corporation";
 
                     adapter.Update(table);
 
-                    // Display rows after update.
+                    // Отобразить строки после обновления.
                     Console.WriteLine();
                     foreach (DataRow row in table.Rows)
                     {
                         Console.WriteLine("{0} {1}", row[0], row[1]);
                     }
-                    Console.WriteLine("----After Update-----");
+                    Console.WriteLine("----После обновления-----");
 
-                    // Delete a row.
+                    // Удалить строку.
                     DataRow[] deleteRow = table.Select("CustomerID = 'XYZZZ'");
                     foreach (DataRow row in deleteRow)
                     {
@@ -386,13 +386,13 @@ namespace UsingDbProviderFactory
 
                     adapter.Update(table);
 
-                    // Display rows after delete.
+                    // Отобразить строки после удаления.
                     Console.WriteLine();
                     foreach (DataRow row in table.Rows)
                     {
                         Console.WriteLine("{0} {1}", row[0], row[1]);
                     }
-                    Console.WriteLine("----After Delete-----");
+                    Console.WriteLine("----После удаления-----");
                     Console.WriteLine("Customer XYZZZ was deleted.");
                 }
             }
