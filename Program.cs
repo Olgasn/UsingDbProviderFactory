@@ -11,17 +11,56 @@ namespace UsingDbProviderFactory
     {
         static void Main(string[] args)
         {
-            // Set |DataDirectory| value
-            string pathDB = @"C:\USERS\OLAS\DOCUMENTS\VISUAL STUDIO 2015\PROJECTS\USINGDBPROVIDERFACTORY\APP_DATA\";
+            // Установить значение DataDirectory для использования в App.Config
+            string pathDB = AppDomain.CurrentDomain.BaseDirectory+@"APP_DATA\";
             AppDomain.CurrentDomain.SetData("DataDirectory", pathDB);
             string dpath = ConfigurationManager.AppSettings["DataDirectory"];
+
+
+            Console.WriteLine("===== Имена установленных поставщиков и фабрик =====");
             GetProviderFactoryClasses();
+            Console.WriteLine();
+
+            //Задание имени поставщика
             string providerName = "System.Data.SqlClient";
+
+            Console.WriteLine("============ Строка соединения===========");
             string connectionString = GetConnectionStringByProvider(providerName);
+            Console.WriteLine(connectionString);
+            Console.WriteLine();
+
+            //Получение соединения
             DbConnection conn = CreateDbConnection(providerName, connectionString);
+            if (conn != null)
+            {
+                Console.WriteLine("Соединение установлено!");
+
+            }
+            //Извлечение данных с помощью DbCommand
+            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbCommand =====");
             DbCommandSelect(conn);
+            Console.WriteLine();
+
+            //Изменение данных с помощью DbCommand
+            conn = CreateDbConnection(providerName, connectionString);
+            Console.WriteLine("==== Выполнение изменений данных с помощью объекта DbCommand =====");
+            ExecuteDbCommand(conn);
+            Console.WriteLine();
             Console.Read();
 
+
+
+            //Получение данных с помощью объекта DbDataAdapter
+            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
+            CreateDataAdapter(providerName, connectionString);
+            Console.WriteLine();
+            
+            //Изменение данных с помощью объекта DbDataAdapter
+            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
+            CRUDDataAdapter(providerName, connectionString);
+            Console.WriteLine();
+
+            Console.Read();
 
         }
 
@@ -29,18 +68,21 @@ namespace UsingDbProviderFactory
         {
             // Получение имен установленных поставщиков и фабрик.
             DataTable table = DbProviderFactories.GetFactoryClasses();
-
             // Отобразить значения каждой строки и столбца.
+            int i = 1;
             foreach (DataRow row in table.Rows)
             {
                 foreach (DataColumn column in table.Columns)
                 {
+                    Console.Write(i);
                     Console.WriteLine(row[column]);
+                    Console.WriteLine();
+                    i += 1;
                 }
             }
             return table;
         }
-        // Получение строки соединения по имени providerName. 
+        // Получение строки соединения по имени поставщика. 
         // Предполагается, что в конфигурационном файле существует одно соединение для каждого поставщика.
         static string GetConnectionStringByProvider(string providerName)
         {
@@ -61,7 +103,6 @@ namespace UsingDbProviderFactory
                     break;
                 }
             }
-            Console.Read();
 
             return returnValue;
         }
@@ -95,12 +136,12 @@ namespace UsingDbProviderFactory
                     Console.WriteLine(ex.Message);
                 }
             }
-            // Return the connection.
+            // Вернуть объект Connection
             return connection;
         }
 
         //Пример извлечения данных
-        //В этом примере в качестве аргумента указывается объект DbConnection.
+        //В качестве аргумента указывается объект DbConnection.
         //Объект DbCommand создается для выбора данных из таблицы Categories путем задания CommandText инструкции SQL SELECT. 
         //Предполагается, что в источнике данных существует таблица Categories.
         //Открывается соединение, и данные получаются при помощи объекта DbDataReader.
@@ -116,36 +157,33 @@ namespace UsingDbProviderFactory
                 {
                     try
                     {
-                        // Create the command.
+                        // Создать команду
                         DbCommand command = connection.CreateCommand();
                         command.CommandText = queryString;
                         command.CommandType = CommandType.Text;
 
-                        // Open the connection.
+                        // Открыть соединение
                         connection.Open();
 
-                        // Retrieve the data.
+                        // Запросить и получить данные
                         DbDataReader reader = command.ExecuteReader();
                         while (reader.Read())
                         {
                             Console.WriteLine("{0}. {1}", reader[0], reader[1]);
                         }
-                        Console.Read();
 
                     }
 
                     catch (Exception ex)
                     {
                         Console.WriteLine("Exception.Message: {0}", ex.Message);
-                        Console.Read();
 
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Failed: DbConnection is null.");
-                Console.Read();
+                Console.WriteLine("Ошибка: DbConnection is null.");
 
             }
 
@@ -160,26 +198,26 @@ namespace UsingDbProviderFactory
         //Ошибки в источнике данных обрабатываются блоком кода DbException, а все остальные исключения - в блоке Exception.
         static void ExecuteDbCommand(DbConnection connection)
         {
-            // Check for valid DbConnection object.
+            // Проверка на существование DbConnection объекта.
             if (connection != null)
             {
                 using (connection)
                 {
                     try
                     {
-                        // Open the connection.
+                        // Открыть соединение.
                         connection.Open();
 
-                        // Create and execute the DbCommand.
+                        // Созать и выполнить DbCommand.
                         DbCommand command = connection.CreateCommand();
                         command.CommandText =
                             "INSERT INTO Categories (CategoryName) VALUES ('Low Carb')";
                         int rows = command.ExecuteNonQuery();
 
-                        // Display number of rows inserted.
+                        // Отобразить число вставленных строк.
                         Console.WriteLine("Inserted {0} rows.", rows);
                     }
-                    // Handle data errors.
+                    // Обработка ошибок свзанных с данными.
                     catch (DbException exDb)
                     {
                         Console.WriteLine("DbException.GetType: {0}", exDb.GetType());
@@ -187,16 +225,16 @@ namespace UsingDbProviderFactory
                         Console.WriteLine("DbException.ErrorCode: {0}", exDb.ErrorCode);
                         Console.WriteLine("DbException.Message: {0}", exDb.Message);
                     }
-                    // Handle all other exceptions.
+                    // Обработка других ошибок.
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Exception.Message: {0}", ex.Message);
+                        Console.WriteLine("Сообщение об исключении: {0}", ex.Message);
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Failed: DbConnection is null.");
+                Console.WriteLine("Ошибка: DbConnection is null.");
             }
         }
         //Получение данных с помощью объекта DbDataAdapter
@@ -209,7 +247,7 @@ namespace UsingDbProviderFactory
         {
             try
             {
-                // Create the DbProviderFactory and DbConnection.
+                // Создать DbProviderFactory и DbConnection.
                 DbProviderFactory factory =
                     DbProviderFactories.GetFactory(providerName);
 
@@ -218,24 +256,24 @@ namespace UsingDbProviderFactory
 
                 using (connection)
                 {
-                    // Define the query.
+                    // Определение строки запроса.
                     string queryString =
                         "SELECT CategoryName FROM Categories";
 
-                    // Create the DbCommand.
+                    // Создание DbCommand.
                     DbCommand command = factory.CreateCommand();
                     command.CommandText = queryString;
                     command.Connection = connection;
 
-                    // Create the DbDataAdapter.
+                    // Создание DbDataAdapter.
                     DbDataAdapter adapter = factory.CreateDataAdapter();
                     adapter.SelectCommand = command;
 
-                    // Fill the DataTable.
+                    // Заполнение DataTable.
                     DataTable table = new DataTable();
                     adapter.Fill(table);
 
-                    //  Display each row and column value.
+                    //  Отображение каждой строки и столбца.
                     foreach (DataRow row in table.Rows)
                     {
                         foreach (DataColumn column in table.Columns)
