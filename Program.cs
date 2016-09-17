@@ -2,19 +2,32 @@
 using System.Data;
 using System.Data.Common;
 using System.Configuration;
+using System.IO;
+using System.Reflection;
 
-namespace ConsoleApplication1
+namespace UsingDbProviderFactory
 {
     class Program
     {
         static void Main(string[] args)
         {
+            // Set |DataDirectory| value
+            string pathDB = AppDomain.CurrentDomain.BaseDirectory;
+            AppDomain.CurrentDomain.SetData("DataDirectory", pathDB);
+            string dpath = ConfigurationManager.AppSettings["DataDirectory"];
             GetProviderFactoryClasses();
+            string providerName = "System.Data.SqlClient";
+            string connectionString = GetConnectionStringByProvider(providerName);
+            DbConnection conn = CreateDbConnection(providerName, connectionString);
+            DbCommandSelect(conn);
+            Console.Read();
+
+
         }
-        
+
         static DataTable GetProviderFactoryClasses()
         {
-            // Получение установленные поставщики и фабрики.
+            // Получение имен установленных поставщиков и фабрик.
             DataTable table = DbProviderFactories.GetFactoryClasses();
 
             // Отобразить значения каждой строки и столбца.
@@ -48,14 +61,15 @@ namespace ConsoleApplication1
                     break;
                 }
             }
+            Console.Read();
+
             return returnValue;
         }
 
         // Given a provider name and connection string, 
         // create the DbProviderFactory and DbConnection.
         // Returns a DbConnection on success; null on failure.
-        static DbConnection CreateDbConnection(
-            string providerName, string connectionString)
+        static DbConnection CreateDbConnection(string providerName, string connectionString)
         {
             // Assume failure.
             DbConnection connection = null;
@@ -116,18 +130,25 @@ namespace ConsoleApplication1
                         {
                             Console.WriteLine("{0}. {1}", reader[0], reader[1]);
                         }
+                        Console.Read();
+
                     }
 
                     catch (Exception ex)
                     {
                         Console.WriteLine("Exception.Message: {0}", ex.Message);
+                        Console.Read();
+
                     }
                 }
             }
             else
             {
                 Console.WriteLine("Failed: DbConnection is null.");
+                Console.Read();
+
             }
+
         }
         // Пример выполнения команды
         //В этом примере в качестве аргумента указывается объект DbConnection.
