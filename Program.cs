@@ -134,7 +134,7 @@ namespace UsingDbProviderFactory
                 }
                 catch (Exception ex)
                 {
-                    // Установить занчение connection  null, если оно было установлено.
+                    // Задать значение connection  null, если оно было установлено.
                     if (connection != null)
                     {
                         connection = null;
@@ -223,7 +223,7 @@ namespace UsingDbProviderFactory
                         // Отобразить число вставленных строк.
                         Console.WriteLine("Inserted {0} rows.", rows);
                     }
-                    // Обработка ошибок свзанных с данными.
+                    // Обработка ошибок, связанных с данными.
                     catch (DbException exDb)
                     {
                         Console.WriteLine("DbException.GetType: {0}", exDb.GetType());
