@@ -51,8 +51,7 @@ namespace UsingDbProviderFactory
             Console.WriteLine("==== Выполнение изменений данных с помощью объекта DbCommand =====");
             ExecuteDbCommand(conn);
             Console.WriteLine();
-            Console.Read();
-
+            Console.ReadKey();
 
 
             //Получение данных с помощью объекта типа DbDataAdapter
@@ -65,8 +64,7 @@ namespace UsingDbProviderFactory
             CRUDDataAdapter(providerName, connectionString);
             Console.WriteLine();
 
-            Console.Read();
-
+            Console.ReadKey();
         }
         
         // Получение имен установленных поставщиков и фабрик.
@@ -337,12 +335,15 @@ namespace UsingDbProviderFactory
                     DbCommandBuilder builder = factory.CreateCommandBuilder();
                     builder.DataAdapter = adapter;
 
-                    // Получить insert, update and delete команды.
+                    // Создать команды insert, update и delete 
+                    // с помощью методов объекта DbCommandBuilder.
                     adapter.InsertCommand = builder.GetInsertCommand();
                     adapter.UpdateCommand = builder.GetUpdateCommand();
                     adapter.DeleteCommand = builder.GetDeleteCommand();
 
-                    // Отобразить содержимое для каждой команды.
+                    // Отобразить созданное объектом DbCommandBuilder
+                    // содержимое для каждой команды insert, update и delete.
+                    Console.WriteLine("Сгенерированные команды:");
                     Console.WriteLine("InsertCommand: {0}",
                         adapter.InsertCommand.CommandText);
                     Console.WriteLine("UpdateCommand: {0}",
