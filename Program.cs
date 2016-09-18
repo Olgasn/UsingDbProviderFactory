@@ -79,7 +79,6 @@ namespace UsingDbProviderFactory
                 {
                     Console.Write(i.ToString()+". ");
                     Console.WriteLine(row[column]);
-                    Console.WriteLine();
                     i += 1;
                 }
             }
