@@ -11,19 +11,24 @@ namespace UsingDbProviderFactory
     {
         static void Main(string[] args)
         {
-            // Установить значение DataDirectory для использования в App.Config
-            string pathDB = AppDomain.CurrentDomain.BaseDirectory+@"APP_DATA\";
-            AppDomain.CurrentDomain.SetData("DataDirectory", pathDB);
-            string dpath = ConfigurationManager.AppSettings["DataDirectory"];
 
-
+            // Вывод списка имен установленных поставщиков и фабрик
+            // из файла конфигурационного файла machine.config
             Console.WriteLine("===== Имена установленных поставщиков и фабрик =====");
             GetProviderFactoryClasses();
             Console.WriteLine();
 
-            //Задание имени поставщика
+            //Задание имени поставщика, который будет использоваться для доступа к базе данных
             string providerName = "System.Data.SqlClient";
 
+            // Задать имя каталога, где расположены файлы 
+            // базы данных, параметру DataDirectory для использования его в конфигкрационном файле App.Config
+            string pathDB = AppDomain.CurrentDomain.BaseDirectory + @"APP_DATA\";
+            AppDomain.CurrentDomain.SetData("DataDirectory", pathDB);
+            string dpath = ConfigurationManager.AppSettings["DataDirectory"];
+
+
+            //Получение из конфигурационного файла строки подключения к базе данных
             Console.WriteLine("============ Строка соединения===========");
             string connectionString = GetConnectionStringByProvider(providerName);
             Console.WriteLine(connectionString);
@@ -36,12 +41,12 @@ namespace UsingDbProviderFactory
                 Console.WriteLine("Соединение установлено!");
 
             }
-            //Извлечение данных с помощью DbCommand
+            //Извлечение данных с помощью объекта типа DbCommand
             Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbCommand =====");
             DbCommandSelect(conn);
             Console.WriteLine();
 
-            //Изменение данных с помощью DbCommand
+            //Изменение данных с помощью объекта типа DbCommand
             conn = CreateDbConnection(providerName, connectionString);
             Console.WriteLine("==== Выполнение изменений данных с помощью объекта DbCommand =====");
             ExecuteDbCommand(conn);
@@ -50,12 +55,12 @@ namespace UsingDbProviderFactory
 
 
 
-            //Получение данных с помощью объекта DbDataAdapter
+            //Получение данных с помощью объекта типа DbDataAdapter
             Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
             CreateDataAdapter(providerName, connectionString);
             Console.WriteLine();
-            
-            //Изменение данных с помощью объекта DbDataAdapter
+
+            //Изменение данных с помощью объекта типа DbDataAdapter
             Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
             CRUDDataAdapter(providerName, connectionString);
             Console.WriteLine();
@@ -63,10 +68,12 @@ namespace UsingDbProviderFactory
             Console.Read();
 
         }
-
+        
+        // Получение имен установленных поставщиков и фабрик.
         static DataTable GetProviderFactoryClasses()
         {
-            // Получение имен установленных поставщиков и фабрик.
+            // Получение имен установленных поставщиков и фабрик
+            // и сохранение их в объекте типа DataTable.
             DataTable table = DbProviderFactories.GetFactoryClasses();
             // Отобразить значения каждой строки и столбца.
             int i = 1;
@@ -82,18 +89,19 @@ namespace UsingDbProviderFactory
             }
             return table;
         }
+        
         // Получение строки соединения по имени поставщика. 
         // Предполагается, что в конфигурационном файле существует одно соединение для каждого поставщика.
         static string GetConnectionStringByProvider(string providerName)
         {
-            // Return null on failure.
+            // Значение по умолчанию - будет возвращено при ошибке.
             string returnValue = null;
 
-            // Get the collection of connection strings.
+            // Получить коллекцию строк соединения
             var settings = ConfigurationManager.ConnectionStrings;
 
-            // Walk through the collection and return the first 
-            // connection string matching the providerName.
+            // Перебор элементов коллекции для нахождения
+            // строки соединения, соответствующей заданному поставщику
             if (settings != null)
             {
                 foreach (ConnectionStringSettings cs in settings)
@@ -107,12 +115,12 @@ namespace UsingDbProviderFactory
             return returnValue;
         }
 
-        // Given a provider name and connection string, 
-        // create the DbProviderFactory and DbConnection.
-        // Returns a DbConnection on success; null on failure.
+        // Создание фабрики DbProviderFactory и объекта DbConnection 
+        // путем передачи имени поставщика в формате «System.Data.ProviderName» и строки соединения. 
+        // В случае успеха возвращается объект DbConnection; в случае любой ошибки - null.
         static DbConnection CreateDbConnection(string providerName, string connectionString)
         {
-            // Assume failure.
+            // Значение по умолчанию - будет возвращено при ошибке.
             DbConnection connection = null;
 
             // Создание объектов DbProviderFactory и DbConnection.
@@ -128,7 +136,7 @@ namespace UsingDbProviderFactory
                 }
                 catch (Exception ex)
                 {
-                    // Set the connection to null if it was created.
+                    // Установить занчение connection  null, если оно было установлено.
                     if (connection != null)
                     {
                         connection = null;
