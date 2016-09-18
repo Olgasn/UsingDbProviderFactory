@@ -2,8 +2,6 @@
 using System.Data;
 using System.Data.Common;
 using System.Configuration;
-using System.IO;
-using System.Reflection;
 
 namespace UsingDbProviderFactory
 {
@@ -14,11 +12,11 @@ namespace UsingDbProviderFactory
 
             // Вывод списка имен установленных поставщиков и фабрик
             // из файла конфигурационного файла machine.config
-            Console.WriteLine("===== Имена установленных поставщиков и фабрик =====");
+            Console.WriteLine("Имена установленных поставщиков и фабрик:");
             GetProviderFactoryClasses();
             Console.WriteLine();
 
-            //Задание имени поставщика, который будет использоваться для доступа к базе данных
+            // Задание имени поставщика, который будет использоваться для доступа к базе данных
             string providerName = "System.Data.SqlClient";
 
             // Задать имя каталога, где расположены файлы 
@@ -28,45 +26,45 @@ namespace UsingDbProviderFactory
             string dpath = ConfigurationManager.AppSettings["DataDirectory"];
 
 
-            //Получение из конфигурационного файла строки подключения к базе данных
+            // Получение из конфигурационного файла строки подключения к базе данных
             Console.WriteLine("============ Строка соединения===========");
             string connectionString = GetConnectionStringByProvider(providerName);
             Console.WriteLine(connectionString);
             Console.WriteLine();
 
-            //Получение соединения
+            // Получение соединения
             DbConnection conn = CreateDbConnection(providerName, connectionString);
             if (conn != null)
             {
                 Console.WriteLine("Соединение установлено!");
 
             }
-            //Извлечение данных с помощью объекта типа DbCommand
-            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbCommand =====");
+            // Извлечение данных с помощью объекта типа DbCommand
+            Console.WriteLine("==== Выборка данных с помощью объекта DbCommand =====");
             DbCommandSelect(conn);
             Console.WriteLine();
 
-            //Изменение данных с помощью объекта типа DbCommand
+            // Изменение данных с помощью объекта типа DbCommand
             conn = CreateDbConnection(providerName, connectionString);
-            Console.WriteLine("==== Выполнение изменений данных с помощью объекта DbCommand =====");
+            Console.WriteLine("==== Изменение данных с помощью объекта DbCommand =====");
             ExecuteDbCommand(conn);
             Console.WriteLine();
             Console.ReadKey();
 
 
-            //Получение данных с помощью объекта типа DbDataAdapter
-            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
+            // Получение данных с помощью объекта типа DbDataAdapter
+            Console.WriteLine("==== Выборка данных с помощью объекта DbDataAdapter =====");
             CreateDataAdapter(providerName, connectionString);
             Console.WriteLine();
 
-            //Изменение данных с помощью объекта типа DbDataAdapter
-            Console.WriteLine("==== Выполнение выборки данных с помощью объекта DbDataAdapter =====");
+            // Изменение данных с помощью объекта типа DbDataAdapter
+            Console.WriteLine("==== Изменение данных с помощью объекта DbDataAdapter =====");
             CRUDDataAdapter(providerName, connectionString);
             Console.WriteLine();
 
             Console.ReadKey();
         }
-        
+        //=================================================
         // Получение имен установленных поставщиков и фабрик.
         static DataTable GetProviderFactoryClasses()
         {
@@ -87,7 +85,7 @@ namespace UsingDbProviderFactory
             }
             return table;
         }
-        
+        //=================================================
         // Получение строки соединения по имени поставщика. 
         // Предполагается, что в конфигурационном файле существует одно соединение для каждого поставщика.
         static string GetConnectionStringByProvider(string providerName)
@@ -112,7 +110,7 @@ namespace UsingDbProviderFactory
 
             return returnValue;
         }
-
+        //=================================================
         // Создание фабрики DbProviderFactory и объекта DbConnection 
         // путем передачи имени поставщика в формате «System.Data.ProviderName» и строки соединения. 
         // В случае успеха возвращается объект DbConnection; в случае любой ошибки - null.
@@ -145,8 +143,8 @@ namespace UsingDbProviderFactory
             // Вернуть объект Connection
             return connection;
         }
-
-        // Пример извлечения данных
+        //=================================================
+        // Пример извлечения данных.
         // В качестве аргумента указывается объект DbConnection.
         // Объект DbCommand создается для выбора данных из таблицы Categories путем задания CommandText инструкции SQL SELECT. 
         // Предполагается, что в источнике данных существует таблица Categories.
@@ -194,7 +192,8 @@ namespace UsingDbProviderFactory
             }
 
         }
-        // Пример выполнения команды
+        //=================================================
+        // Пример выполнения команды на изменение данных.
         // В качестве аргумента указывается объект DbConnection.
         // Если объект DbConnection является допустимым, то открывается соединение, 
         // создается и выполняется команда DbCommand.CommandText задается инструкции SQL INSERT, 
@@ -243,7 +242,8 @@ namespace UsingDbProviderFactory
                 Console.WriteLine("Ошибка: DbConnection is null.");
             }
         }
-        // Получение данных с помощью объекта DbDataAdapter
+        //=================================================
+        // Получение данных с помощью объекта DbDataAdapter.
         // Демонстрируется создание строго типизированного объекта DbDataAdapter на основе имени поставщика и строки соединения.
         // В коде используется метод CreateConnection объекта DbProviderFactory для создания DbConnection.
         // После этого в коде с помощью метода CreateCommand путем указания его свойств CommandText и Connection создается команда DbCommand для выборки данных.
@@ -294,6 +294,7 @@ namespace UsingDbProviderFactory
                 Console.WriteLine(ex.Message);
             }
         }
+        //=================================================
         // Изменение данных с помощью DbDataAdapter
         // Демонстрируется модификация данных в DataTable с использованием DbDataAdapter, 
         // в котором применяется объект DbCommandBuilder для формирования команд, необходимых для обновления данных в источнике данных.
